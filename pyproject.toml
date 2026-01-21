@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ccrecall"
-version = "0.1.0"
+version = "0.1.1"
 description = "RLM-powered semantic search for Claude Code conversation history"
 readme = "README.md"
 license = {text = "MIT"}
