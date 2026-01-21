@@ -1,10 +1,10 @@
-# RLM Claude Recall
+# ccrecall
 
 RLM-powered semantic search for Claude Code conversation history.
 
 ## Overview
 
-RLM Claude Recall provides three tools for exploring your Claude Code conversation history:
+ccrecall provides three tools for exploring your Claude Code conversation history:
 
 - **memory_projects** - Discover all projects with session counts and sizes
 - **memory_timeline** - Browse recent sessions with summaries
@@ -18,7 +18,7 @@ RLM Claude Recall provides three tools for exploring your Claude Code conversati
            ┌───────────────┼───────────────┐
            │               │               │
            ▼               ▼               ▼
-  RLM Claude Recall  RLM MCP Server   Other MCPs
+       ccrecall      RLM MCP Server   Other MCPs
            │                  ▲
            │   MCP Client     │
            └──────────────────┘
@@ -30,28 +30,44 @@ RLM Claude Recall provides three tools for exploring your Claude Code conversati
     │   └── {session}/session-memory/summary.md
 ```
 
-RLM Claude Recall is **dual-role**: It's an MCP server (exposing tools to Claude) and an MCP client (calling RLM tools for semantic search).
+ccrecall is **dual-role**: It's an MCP server (exposing tools to Claude) and an MCP client (calling RLM tools for semantic search).
 
 ## Installation
 
-### 1. Install RLM Claude Recall
+### 1. Install RLM (Dependency)
+
+ccrecall requires [RLM](https://github.com/richardwhiteii/rlm) for semantic search.
 
 ```bash
-cd /path/to/rlm-claude-recall
+git clone https://github.com/richardwhiteii/rlm.git
+cd rlm
 uv pip install -e .
 ```
 
-### 2. Configure Claude Code
+### 2. Install ccrecall
 
-Add to `~/.claude/.mcp.json`:
+```bash
+git clone https://github.com/richardwhiteii/ccrecall.git
+cd ccrecall
+uv pip install -e .
+```
+
+### 3. Configure Claude Code
+
+Add both MCP servers to `~/.claude/.mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "rlm-claude-recall": {
+    "rlm": {
       "command": "uv",
-      "args": ["run", "rlm-claude-recall"],
-      "cwd": "/path/to/rlm-claude-recall",
+      "args": ["run", "rlm-server"],
+      "cwd": "/path/to/rlm"
+    },
+    "ccrecall": {
+      "command": "uv",
+      "args": ["run", "ccrecall"],
+      "cwd": "/path/to/ccrecall",
       "env": {
         "RLM_SERVER_PATH": "/path/to/rlm"
       }
@@ -60,14 +76,7 @@ Add to `~/.claude/.mcp.json`:
 }
 ```
 
-### 3. Ensure RLM is Available
-
-RLM Claude Recall requires the RLM MCP server for semantic search (`memory_recall`). Install RLM:
-
-```bash
-cd /path/to/rlm
-uv pip install -e .
-```
+Restart Claude Code to load the new MCP servers.
 
 ## Tools
 
@@ -152,25 +161,33 @@ Semantic search across conversation history using RLM.
 
 ## Configuration
 
-| Environment Variable | Default | Description |
-|---------------------|---------|-------------|
-| `RLM_SERVER_PATH` | `/Users/richard/projects/fun/rlm` | Path to RLM MCP server |
+| Environment Variable | Required | Description |
+|---------------------|----------|-------------|
+| `RLM_SERVER_PATH` | Yes | Path to RLM MCP server installation |
 
-## Usage Examples
+## Usage
 
+Once both MCP servers are configured and Claude Code is restarted, you can ask Claude natural questions about your conversation history:
+
+**Exploring your projects:**
 ```
-User: "Show my Claude Code projects"
-Claude: memory_projects()
-→ 45 projects, 452 sessions, 4.6GB total
-
-User: "What did I work on this week?"
-Claude: memory_timeline(days=7)
-→ 12 sessions listed by project and title
-
-User: "How did I fix the ADK State bug?"
-Claude: memory_recall(query="ADK State bug fix")
-→ Found in session 6f3a7e75: "Fixed by dual-path pattern..."
+You: What Claude Code projects do I have?
+Claude: [uses memory_projects tool] You have 45 projects with 452 total sessions...
 ```
+
+**Browsing recent work:**
+```
+You: What did I work on this week?
+Claude: [uses memory_timeline tool] Here are your recent sessions...
+```
+
+**Semantic search across conversations:**
+```
+You: How did I fix the authentication bug?
+Claude: [uses memory_recall tool] Found in session abc123: "The bug was in the JWT validation..."
+```
+
+Claude automatically selects the appropriate tool based on your question. The `memory_recall` tool uses RLM for semantic search, which is why both MCP servers need to be configured.
 
 ## Development
 
@@ -192,13 +209,6 @@ pytest tests/ -v -m integration
 # All tests
 pytest tests/ -v
 ```
-
-## Requirements
-
-- Python 3.10+
-- MCP library
-- RLM MCP server (for `memory_recall`)
-- Claude Code with conversation history in `~/.claude/projects/`
 
 ## License
 

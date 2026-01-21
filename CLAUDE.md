@@ -1,13 +1,13 @@
-# RLM Claude Recall
+# ccrecall
 
 ## Overview
 
-RLM Claude Recall is an MCP server that makes Claude Code conversation history queryable via semantic search. It connects to RLM (Recursive Language Model) as an MCP client for LLM-powered search.
+ccrecall is an MCP server that makes Claude Code conversation history queryable via semantic search. It connects to RLM (Recursive Language Model) as an MCP client for LLM-powered search.
 
 ## Architecture
 
 ```
-Claude Code → RLM Claude Recall (MCP Server) → RLM (MCP Client) → Claude Haiku
+Claude Code → ccrecall (MCP Server) → RLM (MCP Client) → Claude Haiku
                          ↓
                 ~/.claude/projects/
 ```

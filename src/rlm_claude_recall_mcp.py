@@ -87,7 +87,12 @@ class RLMClient:
 
     async def connect(self, max_retries: int = 3) -> None:
         """Connect to RLM MCP server with retry logic."""
-        rlm_path = os.environ.get("RLM_SERVER_PATH", "/Users/richard/projects/fun/rlm")
+        rlm_path = os.environ.get("RLM_SERVER_PATH")
+        if not rlm_path:
+            raise RuntimeError(
+                "RLM_SERVER_PATH environment variable not set. "
+                "Set it to the path of your RLM installation."
+            )
 
         server_params = StdioServerParameters(
             command="uv",
@@ -127,13 +132,12 @@ class RLMClient:
         """Call an RLM tool."""
         if not self.session:
             raise RuntimeError("Not connected to RLM server")
-        result = await self.session.call_tool(name, arguments)
-        return result
+        return await self.session.call_tool(name, arguments)
 
 # Global RLM client instance
 rlm_client = RLMClient()
 
-server = Server("rlm-claude-recall")
+server = Server("ccrecall")
 
 @server.list_tools()
 async def list_tools() -> list[Tool]:

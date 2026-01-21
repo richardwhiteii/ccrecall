@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rlm-claude-recall"
+name = "ccrecall"
 version = "0.1.0"
 description = "RLM-powered semantic search for Claude Code conversation history"
 readme = "README.md"
@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [project.scripts]
-rlm-claude-recall = "rlm_claude_recall_mcp:main"
+ccrecall = "rlm_claude_recall_mcp:main"
 
 [project.optional-dependencies]
 dev = [
