@@ -78,6 +78,19 @@ Add both MCP servers to `~/.claude/.mcp.json`:
 
 Restart Claude Code to load the new MCP servers.
 
+### Need Help Installing?
+
+Claude Code can help you install and configure ccrecall. Just ask:
+
+```
+Help me install ccrecall (https://github.com/richardwhiteii/ccrecall) and
+rlm (https://github.com/richardwhiteii/rlm) so I can search my Claude Code
+conversation history. Clone both repos, install them with uv, and use
+`claude mcp add` to configure both MCP servers.
+```
+
+Claude will walk you through each step, adapting paths to your system.
+
 ## Tools
 
 ### memory_projects
